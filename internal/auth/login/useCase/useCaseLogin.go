@@ -21,6 +21,9 @@ func (r *Login) AuthLogin(req *model.RequestLogin) (*model.User, error) {
 		Password: req.Password,
 	}
 
-	u, _ := r.repository.Login(*user)
-	return u, nil
+	u, err := r.repository.Login(*user)
+	if err != nil {
+		return nil, err
+	}
+	return u, err
 }
