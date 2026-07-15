@@ -20,15 +20,13 @@ func NewLoginRepository(db *sql.DB) *LoginRepository {
 
 func (r *LoginRepository) Login(req model.RequestLogin) (*model.User, error) {
 	var u model.User
-	query := "SELECT id, name, username, email, password from TABLE ( user ) where user = ?"
-
-	err := r.db.QueryRow(query, req.Username).Scan(&u.Name, &u.UserName, &u.Email, &u.Phone, &u.Password)
-
+	query := "SELECT id, name, username, email, phone, password FROM user WHERE username = ?"
+	err := r.db.QueryRow(query, req.Username).Scan(&u.Id, &u.Name, &u.UserName, &u.Email, &u.Phone, &u.Password)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, errors.New("Password or Email is wrong!")
 		}
-		return nil, nil
+		return nil, err
 	}
 
 	hastPassword := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(req.Password))
