@@ -8,6 +8,10 @@ import (
 	"rental_car/internal/auth/register/repository"
 	"rental_car/internal/auth/register/useCase"
 	"rental_car/internal/platform"
+	"rental_car/internal/platform/middleware"
+	handler3 "rental_car/internal/user/handler"
+	repository3 "rental_car/internal/user/repository"
+	useCase3 "rental_car/internal/user/useCase"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,15 +33,15 @@ func main() {
 	r.POST("/login", HandlerLogin.LoginUser)
 	r.POST("/register", Handler.CreateUser)
 
-	
+	r.Use(middleware.AuthMiddleware())
+	repoUser := repository3.NewUserRepository(db)
+	useCaseUser := useCase3.NewUserUseCase(repoUser)
+	handlerUser := handler3.NewUserHandler(useCaseUser)
 
-	err := r.Run(":8080")
-	if err != nil {
-		return
-	}
+	r.GET("/user", handlerUser.GetUser)
 
-	err = db.Close()
-	if err != nil {
-		return
-	}
+	r.Run(":8080")
+
+	db.Close()
+
 }
