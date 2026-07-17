@@ -29,8 +29,13 @@ func (h *Register) CreateUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "failed to register",
 		})
+		return
 	}
 
 	err = h.AuthCase.CreateUser(req)
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "success",
+	})
 
 }
