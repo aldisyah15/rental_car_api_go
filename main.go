@@ -39,6 +39,8 @@ func main() {
 	handlerUser := handler3.NewUserHandler(useCaseUser)
 
 	r.GET("/user", handlerUser.GetUser)
+	r.PATCH("/user", handlerUser.UpdateUser)
+	r.DELETE("/user", handlerUser.DeleteUser)
 
 	r.Run(":8080")
 
