@@ -37,9 +37,8 @@ func (h *LoginHandler) LoginUser(c *gin.Context) {
 
 	tokenString, _ := middleware.GenerateString(user.UserName)
 	c.JSON(http.StatusOK, gin.H{
-		"pp":    "jsjsjjs",
-		"token": tokenString,
-		"user":  user,
+		"Message": "success",
+		"token":   tokenString,
 	})
 
 }
