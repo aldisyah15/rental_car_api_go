@@ -24,18 +24,20 @@ func (h *LoginHandler) LoginUser(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
-		c.JSON(http.StatusBadGateway, gin.H{
-			"Error": "gagal masuk",
+		c.JSON(http.StatusBadRequest, gin.H{
+			"Error": err.Error(),
 		})
+		return
 	}
-	user, err2 := h.useCase.AuthLogin(&req)
-	if err2 != nil {
-		c.JSON(http.StatusBadGateway, gin.H{
-			"Error": err2.Error(),
+	user, err := h.useCase.AuthLogin(&req)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"Error": err.Error(),
 		})
+		return
 	}
 
-	tokenString, _ := middleware.GenerateString(user.UserName)
+	tokenString, _ := middleware.GenerateString(user.UserName, user.Rule)
 	c.JSON(http.StatusOK, gin.H{
 		"Message": "success",
 		"token":   tokenString,
