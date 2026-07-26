@@ -27,15 +27,22 @@ func (h *Register) CreateUser(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "failed to register",
+			"error": err.Error(),
 		})
 		return
 	}
 
-	err = h.AuthCase.CreateUser(req)
+	err = h.AuthCase.CreateUser(&req)
+	log.Printf("handler err: %v", err)
 
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "success",
-	})
+	if err != nil {
+		c.JSON(http.StatusFound, gin.H{
+			"error": err.Error(),
+		})
+	} else {
+		c.JSON(http.StatusCreated, gin.H{
+			"message": "success",
+		})
+	}
 
 }

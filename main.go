@@ -7,6 +7,9 @@ import (
 	"rental_car/internal/auth/register/handler"
 	"rental_car/internal/auth/register/repository"
 	"rental_car/internal/auth/register/useCase"
+	handler4 "rental_car/internal/car/handler"
+	repository4 "rental_car/internal/car/repository"
+	useCase4 "rental_car/internal/car/useCase"
 	"rental_car/internal/platform"
 	"rental_car/internal/platform/middleware"
 	handler3 "rental_car/internal/user/handler"
@@ -21,6 +24,8 @@ import (
 
 func main() {
 	db := platform.ConnectDB()
+	platform.ConnectGoogleStorage()
+
 	repo := repository.NewAuthRepo(db)
 	UseCase := useCase.NewAuthCase(repo)
 	Handler := handler.NewRegisterHandler(UseCase)
@@ -42,8 +47,20 @@ func main() {
 	r.PATCH("/user", handlerUser.UpdateUser)
 	r.DELETE("/user", handlerUser.DeleteUser)
 
-	r.Run(":8080")
+	repoCar := repository4.NewRepositoryCar(db)
+	useCaseCar := useCase4.NewCarUseCase(repoCar)
+	handlerCar := handler4.NewHandlerCar(useCaseCar)
 
-	db.Close()
+	r.POST("/car", handlerCar.UploadRentalCar)
+
+	err := r.Run(":8080")
+	if err != nil {
+		return
+	}
+
+	err = db.Close()
+	if err != nil {
+		return
+	}
 
 }

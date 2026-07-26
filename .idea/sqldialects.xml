@@ -2,6 +2,8 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/internal/auth/register/repository/repo.go" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/internal/car/repository/RepositoryCar.go" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/internal/user/repository/repositoryUser.go" dialect="GenericSQL" />
+    <file url="PROJECT" dialect="MySQL" />
   </component>
 </project>

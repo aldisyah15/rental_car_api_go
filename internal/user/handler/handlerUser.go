@@ -22,8 +22,11 @@ func NewUserHandler(u *useCase.UserUseCase) *UserHandler {
 
 func (u UserHandler) GetUser(c *gin.Context) {
 	getUsername, _ := c.Get("userName")
+	getRule, _ := c.Get("rule")
 
 	username := getUsername.(string)
+	rule := getRule.(string)
+	log.Printf("rule: %v", rule)
 	user, err := u.useCase.GetUser(username)
 
 	if err != nil {

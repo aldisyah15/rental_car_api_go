@@ -1,0 +1,265 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Rental Car Api",
+    "description": "A restfull API to managing rental car",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": [
+          "Register"
+        ],
+        "summary": "Register new user",
+        "description": "before login, the user most register",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json" : {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name" : {
+                    "type": "string",
+                    "format": "name",
+                    "minLength": 3,
+                    "example": "aldiansyah cat"
+                  },
+                  "username" : {
+                    "type": "string",
+                    "format": "username",
+                    "minLength": 3,
+                    "example": "aldisyah_15"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "aldi@gmail.com"
+                  },
+                  "password" : {
+                    "type": "string",
+                    "format": "password",
+                    "maxLength": 20,
+                    "minLength": 6,
+                    "example": "rahasiaPass"
+                  },
+                  "phone" : {
+                    "type": "string",
+                    "format": "phone",
+                    "maxLength": 15,
+                    "minLength": 7,
+                    "example": "08989766666"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "account successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, example field not as expacted or failed validation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "properties": {
+                    "error:" : {
+                      "type": "string",
+                      "example": "bad request"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "302": {
+            "description": "when the user tries to register an account, the username or email is already registered in the database"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Login"
+        ],
+        "summary": "Login user",
+        "description": "the user enters username and password, if successful, it returns token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json" : {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username" : {
+                    "type": "string",
+                    "example": "aldisyah_15"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "rahasiaPass"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200" : {
+            "description": "successful login, and it returns value a token random, the token Containing username",
+            "content": {
+              "application/json" : {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "token" : {
+                      "type": "string",
+                      "example": "aCusbsBvsh56Svbbsnsmssjsjsb77s8vsjbsvs8snsjsbss7vjdbkd7"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request, example field as expected or failed validation",
+            "content": {
+              "application/json" : {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "email must be a valid"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "when the input that entered by the user is not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "username or password is wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "tags": ["user"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get data all information user",
+        "description": "Get all user information, input data will be validated, as well as must bring a token to need authtentication, if you don't bring a token, then there will be an error",
+        "responses": {
+          "200": {
+            "description": "if successful, return value code 200 ok, and don't forget to get an token which is obtained before login. it will return 5 fields with values",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data" :{
+                      "properties": {
+                        "id": {
+                          "type": "int",
+                          "example": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "aldiansyah"
+                        },
+                        "username": {
+                          "type": "string",
+                          "example": "aldisyah_15"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "aldisyah@gmail.com"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "example": "08717178337"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you not bring a token, then there will be an error: unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Anda tidak memiliki akses"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["user"],
+        "description": "You can updated direct data from method patch, for example, change your username",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Changes data user"
+      }
+    }
+
+  }
+}

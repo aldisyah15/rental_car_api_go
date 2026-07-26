@@ -7,5 +7,10 @@
         <method importPath="rental_car/internal/auth/login/useCase" receiver="*Login" name="AuthLogin" />
       </methods>
     </inspection_tool>
+    <inspection_tool class="GoResourceLeak" enabled="true" level="WARNING" enabled_by_default="true">
+      <functions>
+        <function importPath="cloud.google.com/go/storage" name="NewClient" />
+      </functions>
+    </inspection_tool>
   </profile>
 </component>

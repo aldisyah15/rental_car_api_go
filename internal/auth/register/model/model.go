@@ -10,9 +10,9 @@ type User struct {
 }
 
 type RegisterRequest struct {
-	Name     string `json:"name" binding:"required"`
-	UserName string `json:"username" binding:"required"`
-	Email    string `json:"email" binding:"required"`
+	Name     string `json:"name" binding:"required,min=2"`
+	UserName string `json:"username" binding:"required,min=3"`
+	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required"`
-	Phone    string `json:"phone" binding:"required"`
+	Phone    string `json:"phone" binding:"required,max=15"`
 }

@@ -1,6 +1,7 @@
 package useCase
 
 import (
+	"errors"
 	"rental_car/internal/auth/login/model"
 	"rental_car/internal/auth/login/repository"
 )
@@ -21,9 +22,11 @@ func (r *Login) AuthLogin(req *model.RequestLogin) (*model.User, error) {
 		Password: req.Password,
 	}
 
-	u, err := r.repository.Login(*user)
+	result, err := r.repository.Login(*user)
+
 	if err != nil {
-		return nil, err
+		return nil, errors.New("username or password wrong")
 	}
-	return u, err
+
+	return result, err
 }
