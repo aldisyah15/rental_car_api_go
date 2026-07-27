@@ -10,15 +10,13 @@ import (
 	"cloud.google.com/go/storage"
 )
 
-func UploadFile(ctx context.Context, fileHeader *multipart.FileHeader, bucket string) (string, error) {
-	// 1. Buka file dari FileHeader
+func UploadFileAndGet(ctx context.Context, fileHeader *multipart.FileHeader, bucket string) (string, error) {
 	file, err := fileHeader.Open()
 	if err != nil {
 		return "", fmt.Errorf("gagal membuka file: %w", err)
 	}
 	defer file.Close()
 
-	// 2. Set timeout untuk upload
 	ctx, cancel := context.WithTimeout(ctx, 2*time.Minute)
 	defer cancel()
 

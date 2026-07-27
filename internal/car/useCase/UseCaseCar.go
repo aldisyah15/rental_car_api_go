@@ -24,8 +24,12 @@ func (c CarUseCase) UploadRentalCar(car *model.RequestCar, urlImages []string) e
 		Seat:        car.Seat,
 		Stock:       car.Stock,
 	}
-
 	err := c.repository.UploadRentalCar(cars, urlImages)
-
 	return err
+}
+
+func (c CarUseCase) GetAllCars() (*[]model.ResponseCar, error) {
+	cars, err := c.repository.GetAllCars()
+
+	return cars, err
 }

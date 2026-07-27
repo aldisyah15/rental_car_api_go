@@ -22,15 +22,37 @@ func (r CarRepository) UploadRentalCar(car *model.RequestCar, urlImages []string
 	return err
 }
 
-func (r CarRepository) GetDetailCar() (*model.ResponseCar, error) {
-	var cars model.ResponseCar
-	query := "SELECT id, name, brand, rental_price, images, horse_power, gear, description, stock from detail_car"
-	err := r.db.QueryRow(query).Scan(&cars.Id, &cars.Name, &cars.Brand, &cars.RentalPrice, cars.Images, cars.Horsepower, &cars.Gear, &cars.Description, &cars.Stock)
+func (r CarRepository) GetAllCars() (*[]model.ResponseCar, error) {
 
+	query := "SELECT id, name, brand, rental_price, image, horse_power, gear, description, stock from detail_car"
+
+	rows, err := r.db.Query(query)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, err
+		return nil, err
+	}
+	defer rows.Close()
+
+	var cars []model.ResponseCar
+	for rows.Next() {
+		var rawJSON []byte
+		var car model.ResponseCar
+
+		_ = rows.Scan(
+			&car.Id,
+			&car.Name,
+			&car.Brand,
+			&car.RentalPrice,
+			&rawJSON,
+			&car.Horsepower,
+			&car.Gear,
+			&car.Description,
+			&car.Stock,
+		)
+
+		if len(rawJSON) > 0 {
+			_ = json.Unmarshal(rawJSON, &car.Images)
 		}
+		cars = append(cars, car)
 	}
 
 	return &cars, nil
