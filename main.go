@@ -34,22 +34,25 @@ func main() {
 	UseCaseLogin := useCase2.NewUseCaseLogin(repoLogin)
 	HandlerLogin := handler2.NewLoginHandler(UseCaseLogin)
 
-	r := gin.Default()
-	r.POST("/login", HandlerLogin.LoginUser)
-	r.POST("/register", Handler.CreateUser)
-
-	r.Use(middleware.AuthMiddleware())
 	repoUser := repository3.NewUserRepository(db)
 	useCaseUser := useCase3.NewUserUseCase(repoUser)
 	handlerUser := handler3.NewUserHandler(useCaseUser)
 
-	r.GET("/user", handlerUser.GetUser)
-	r.PATCH("/user", handlerUser.UpdateUser)
-	r.DELETE("/user", handlerUser.DeleteUser)
-
 	repoCar := repository4.NewRepositoryCar(db)
 	useCaseCar := useCase4.NewCarUseCase(repoCar)
 	handlerCar := handler4.NewHandlerCar(useCaseCar)
+
+	r := gin.Default()
+
+	r.POST("/login", HandlerLogin.LoginUser)
+	r.POST("/register", Handler.CreateUser)
+	r.GET("/car", handlerCar.GetAllCars)
+
+	r.Use(middleware.AuthMiddleware())
+
+	r.GET("/user", handlerUser.GetUser)
+	r.PATCH("/user", handlerUser.UpdateUser)
+	r.DELETE("/user", handlerUser.DeleteUser)
 
 	r.POST("/car", handlerCar.UploadRentalCar)
 
