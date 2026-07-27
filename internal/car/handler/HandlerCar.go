@@ -6,6 +6,7 @@ import (
 	model "rental_car/internal/car/model"
 	"rental_car/internal/car/useCase"
 	"rental_car/internal/platform"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -86,4 +87,31 @@ func (hc HandlerCar) GetAllCars(c *gin.Context) {
 		"message": "success",
 		"data":    cars,
 	})
+}
+
+func (hc HandlerCar) GetCarById(c *gin.Context) {
+	_, userName := c.Get("userName")
+	if userName == false {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Unauthorized",
+		})
+		return
+	}
+
+	idParam := c.Params.ByName("id")
+	id, _ := strconv.Atoi(idParam)
+	cars, err := hc.UseCaseCar.GetCarById(id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "success",
+		"data":    cars,
+	})
+
 }
