@@ -30,6 +30,11 @@ func (c CarUseCase) UploadRentalCar(car *model.RequestCar, urlImages []string) e
 
 func (c CarUseCase) GetAllCars() (*[]model.ResponseCar, error) {
 	cars, err := c.repository.GetAllCars()
+	return cars, err
+}
+
+func (c CarUseCase) GetCarById(id int) (*model.ResponseCar, error) {
+	cars, err := c.repository.GetCarById(id)
 
 	return cars, err
 }
