@@ -11,6 +11,9 @@
       <functions>
         <function importPath="cloud.google.com/go/storage" name="NewClient" />
       </functions>
+      <methods>
+        <method importPath="database/sql" receiver="*DB" name="Query" />
+      </methods>
     </inspection_tool>
   </profile>
 </component>
