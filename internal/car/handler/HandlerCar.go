@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"log"
 	"net/http"
 	_ "rental_car/internal/car/model"
 	model "rental_car/internal/car/model"
@@ -38,8 +37,6 @@ func (hc HandlerCar) UploadRentalCar(c *gin.Context) {
 		return
 	}
 
-	log.Printf("req : %v", req)
-
 	form, err := c.MultipartForm()
 
 	file := form.File["images"]
@@ -53,7 +50,7 @@ func (hc HandlerCar) UploadRentalCar(c *gin.Context) {
 	var images []string
 
 	for _, fileHeader := range file {
-		url, err := platform.UploadFile(c.Request.Context(), fileHeader, "rental-car-app")
+		url, err := platform.UploadFileAndGet(c.Request.Context(), fileHeader, "rental-car-app")
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error_inUploadFile": err.Error(),
@@ -62,15 +59,6 @@ func (hc HandlerCar) UploadRentalCar(c *gin.Context) {
 		}
 		images = append(images, url)
 	}
-
-	log.Printf("images : %v", images)
-	//imageUrl, errUploadFile := platform.UploadFile(c.Request.Context(), fileHeader, "rental-car-app")
-	//if errUploadFile != nil {
-	//	c.JSON(http.StatusBadRequest, gin.H{
-	//		"error_inUploadFile": err.Error(),
-	//	})
-	//	return
-	//}
 
 	err = hc.UseCaseCar.UploadRentalCar(&req, images)
 	if err != nil {
@@ -82,5 +70,20 @@ func (hc HandlerCar) UploadRentalCar(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "success",
+	})
+}
+
+func (hc HandlerCar) GetAllCars(c *gin.Context) {
+	cars, err := hc.UseCaseCar.GetAllCars()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "success",
+		"data":    cars,
 	})
 }
