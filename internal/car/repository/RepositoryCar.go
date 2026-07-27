@@ -23,9 +23,7 @@ func (r CarRepository) UploadRentalCar(car *model.RequestCar, urlImages []string
 }
 
 func (r CarRepository) GetAllCars() (*[]model.ResponseCar, error) {
-
 	query := "SELECT id, name, brand, rental_price, image, horse_power, gear, description, stock from detail_car"
-
 	rows, err := r.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -48,7 +46,6 @@ func (r CarRepository) GetAllCars() (*[]model.ResponseCar, error) {
 			&car.Description,
 			&car.Stock,
 		)
-
 		if len(rawJSON) > 0 {
 			_ = json.Unmarshal(rawJSON, &car.Images)
 		}
@@ -56,4 +53,19 @@ func (r CarRepository) GetAllCars() (*[]model.ResponseCar, error) {
 	}
 
 	return &cars, nil
+}
+
+func (r CarRepository) GetCarById(id int) (*model.ResponseCar, error) {
+	var car model.ResponseCar
+	var rowsJsonImg []byte
+	query := `SELECT  id, name, brand, rental_price, image, horse_power, gear, description, stock from detail_car where id = ?`
+	err := r.db.QueryRow(query, id).Scan(&car.Id, &car.Name, &car.Brand, &car.RentalPrice, &rowsJsonImg, &car.Horsepower, &car.Gear, &car.Description, &car.Stock)
+	if len(rowsJsonImg) > 0 {
+		_ = json.Unmarshal(rowsJsonImg, &car.Images)
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return &car, nil
 }
