@@ -15,7 +15,7 @@ type ResponseCar struct {
 	Id          int      `json:"id"`
 	Name        string   `json:"name"`
 	Brand       string   `json:"brand"`
-	RentalPrice int64    `json:"rental_price"`
+	RentalPrice float64  `json:"rental_price"`
 	Images      []string `json:"images"`
 	Horsepower  string   `json:"horse_power"`
 	Gear        string   `json:"gear"`
