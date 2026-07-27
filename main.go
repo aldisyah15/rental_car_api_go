@@ -55,6 +55,7 @@ func main() {
 	r.DELETE("/user", handlerUser.DeleteUser)
 
 	r.POST("/car", handlerCar.UploadRentalCar)
+	r.GET("/car/:id", handlerCar.GetCarById)
 
 	err := r.Run(":8080")
 	if err != nil {
