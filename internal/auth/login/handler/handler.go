@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"rental_car/internal/auth/login/model"
 	useCase2 "rental_car/internal/auth/login/useCase"
-	"rental_car/internal/platform/middleware"
+	"rental_car/platform/middleware"
 
 	"github.com/gin-gonic/gin"
 )
