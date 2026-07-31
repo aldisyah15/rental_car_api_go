@@ -52,3 +52,26 @@ func (h HandlerFavorite) Favorite(c *gin.Context) {
 		"message": "success",
 	})
 }
+
+func (h HandlerFavorite) GetFavorite(c *gin.Context) {
+	value, _ := c.Get("userName")
+	if value == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "unauthorize",
+		})
+		return
+	}
+	username := value.(string)
+
+	result, err := h.useCase.GetFavorite(username)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "success",
+		"data":    result,
+	})
+}

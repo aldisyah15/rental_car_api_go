@@ -68,6 +68,7 @@ func main() {
 	r.PATCH("/user", handlerUser.UpdateUser)
 	r.DELETE("/user", handlerUser.DeleteUser)
 	r.POST("/user/favorite", handlerFavorite.Favorite)
+	r.GET("/user/favorite", handlerFavorite.GetFavorite)
 
 	r.POST("/car", handlerCar.UploadRentalCar)
 	r.GET("/car/:id", handlerCar.GetCarById)

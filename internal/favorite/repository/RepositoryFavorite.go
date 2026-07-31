@@ -41,3 +41,25 @@ func (r FavoriteRepository) AddAndRemoveFavorite(fav *model.RequestFavorite) err
 
 	return err
 }
+
+func (r FavoriteRepository) GetFavorite(username string) (*[]model.ResponseFavorite, error) {
+	query := `SELECT username, id_car, DATE_FORMAT(create_at, '%Y-%m-%d %H:%i:%s') FROM user_favorite where username = ?`
+	rows, err := r.db.Query(query, username)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var AllFavorite []model.ResponseFavorite
+	for rows.Next() {
+		var fav model.ResponseFavorite
+		err := rows.Scan(&fav.Username, &fav.IdCar, &fav.CreateAt)
+		if err != nil {
+			return nil, err
+		}
+
+		AllFavorite = append(AllFavorite, fav)
+	}
+
+	return &AllFavorite, nil
+}

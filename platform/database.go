@@ -10,7 +10,7 @@ import (
 
 func ConnectDB() *sql.DB {
 	//godotenv.Load()
-	db, err := sql.Open("mysql", "root:buatakun123@tcp(127.0.0.1:3306)/rental_car?parseTime=true")
+	db, err := sql.Open("mysql", "root:buatakun123@tcp(127.0.0.1:3306)/rental_car?parseTime=true&loc=Local")
 	if err != nil {
 		panic(err)
 	}
