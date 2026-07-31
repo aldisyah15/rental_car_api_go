@@ -35,6 +35,5 @@ func (c CarUseCase) GetAllCars() (*[]model.ResponseCar, error) {
 
 func (c CarUseCase) GetCarById(id int) (*model.ResponseCar, error) {
 	cars, err := c.repository.GetCarById(id)
-
 	return cars, err
 }

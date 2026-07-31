@@ -22,4 +22,5 @@ type ResponseCar struct {
 	Description string   `json:"description"`
 	Seat        string   `json:"seat"`
 	Stock       int      `json:"stock"`
+	Logo        string   `json:"brand"`
 }

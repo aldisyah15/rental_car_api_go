@@ -4,13 +4,14 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log"
 	"mime/multipart"
 	"time"
 
 	"cloud.google.com/go/storage"
 )
 
-func UploadFileAndGet(ctx context.Context, fileHeader *multipart.FileHeader, bucket string) (string, error) {
+func UploadFileAndGet(ctx context.Context, fileHeader *multipart.FileHeader, bucket string, sub string) (string, error) {
 	file, err := fileHeader.Open()
 	if err != nil {
 		return "", fmt.Errorf("gagal membuka file: %w", err)
@@ -26,8 +27,8 @@ func UploadFileAndGet(ctx context.Context, fileHeader *multipart.FileHeader, buc
 	}
 	defer client.Close()
 
-	objectName := fmt.Sprintf("cars/%d_%s", time.Now().Unix(), fileHeader.Filename)
-
+	objectName := fmt.Sprintf("%v/%d_%s", sub, time.Now().Unix(), fileHeader.Filename)
+	log.Printf("objectName: %v", objectName)
 	o := client.Bucket(bucket).Object(objectName)
 	wc := o.NewWriter(ctx)
 
