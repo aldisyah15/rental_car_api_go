@@ -5,7 +5,7 @@ import (
 	_ "rental_car/internal/car/model"
 	model "rental_car/internal/car/model"
 	"rental_car/internal/car/useCase"
-	"rental_car/internal/platform"
+	"rental_car/platform"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -51,7 +51,7 @@ func (hc HandlerCar) UploadRentalCar(c *gin.Context) {
 	var images []string
 
 	for _, fileHeader := range file {
-		url, err := platform.UploadFileAndGet(c.Request.Context(), fileHeader, "rental-car-app")
+		url, err := platform.UploadFileAndGet(c.Request.Context(), fileHeader, "rental-car-app", "cars")
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error_inUploadFile": err.Error(),
@@ -69,7 +69,7 @@ func (hc HandlerCar) UploadRentalCar(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	c.JSON(http.StatusCreated, gin.H{
 		"message": "success",
 	})
 }
@@ -113,5 +113,4 @@ func (hc HandlerCar) GetCarById(c *gin.Context) {
 		"message": "success",
 		"data":    cars,
 	})
-
 }
