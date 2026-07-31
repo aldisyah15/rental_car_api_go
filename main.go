@@ -7,14 +7,20 @@ import (
 	"rental_car/internal/auth/register/handler"
 	"rental_car/internal/auth/register/repository"
 	"rental_car/internal/auth/register/useCase"
+	handler5 "rental_car/internal/brand/handler"
+	repository5 "rental_car/internal/brand/repository"
+	useCase5 "rental_car/internal/brand/useCase"
 	handler4 "rental_car/internal/car/handler"
 	repository4 "rental_car/internal/car/repository"
 	useCase4 "rental_car/internal/car/useCase"
-	"rental_car/internal/platform"
-	"rental_car/internal/platform/middleware"
+	handler6 "rental_car/internal/favorite/handler"
+	repository6 "rental_car/internal/favorite/repository"
+	useCase6 "rental_car/internal/favorite/useCase"
 	handler3 "rental_car/internal/user/handler"
 	repository3 "rental_car/internal/user/repository"
 	useCase3 "rental_car/internal/user/useCase"
+	platform2 "rental_car/platform"
+	"rental_car/platform/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,8 +29,8 @@ import (
 // the <icon src="AllIcons.Actions.Execute"/> icon in the gutter and select the <b>Run</b> menu item from here.</p>
 
 func main() {
-	db := platform.ConnectDB()
-	platform.ConnectGoogleStorage()
+	db := platform2.ConnectDB()
+	platform2.ConnectGoogleStorage()
 
 	repo := repository.NewAuthRepo(db)
 	UseCase := useCase.NewAuthCase(repo)
@@ -42,6 +48,14 @@ func main() {
 	useCaseCar := useCase4.NewCarUseCase(repoCar)
 	handlerCar := handler4.NewHandlerCar(useCaseCar)
 
+	repoLogo := repository5.NewRepositoryLogo(db)
+	useCaseLogo := useCase5.NewUseCaseLogo(repoLogo)
+	handlerLogo := handler5.NewCarHandlerLogo(useCaseLogo)
+
+	repoFavorite := repository6.NewRepositoryFavorite(db)
+	useCasefavorite := useCase6.NewUseCaseFavorite(repoFavorite)
+	handlerFavorite := handler6.NewHandlerFavorite(useCasefavorite)
+
 	r := gin.Default()
 
 	r.POST("/login", HandlerLogin.LoginUser)
@@ -53,9 +67,13 @@ func main() {
 	r.GET("/user", handlerUser.GetUser)
 	r.PATCH("/user", handlerUser.UpdateUser)
 	r.DELETE("/user", handlerUser.DeleteUser)
+	r.POST("/user/favorite", handlerFavorite.Favorite)
 
 	r.POST("/car", handlerCar.UploadRentalCar)
 	r.GET("/car/:id", handlerCar.GetCarById)
+
+	r.POST("/logo", handlerLogo.UploadLogo)
+	r.GET("/logo", handlerLogo.GetAllLogo)
 
 	err := r.Run(":8080")
 	if err != nil {
@@ -63,8 +81,4 @@ func main() {
 	}
 
 	err = db.Close()
-	if err != nil {
-		return
-	}
-
 }
