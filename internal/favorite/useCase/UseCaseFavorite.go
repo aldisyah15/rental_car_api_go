@@ -15,12 +15,12 @@ func NewUseCaseFavorite(repo *repository.FavoriteRepository) *FavoriteUseCase {
 	}
 }
 
-func (u FavoriteUseCase) Favorite(fav *model.RequestFavorite) error {
+func (u FavoriteUseCase) AddAndRemoveFavorite(fav *model.RequestFavorite) error {
 	favorite := &model.RequestFavorite{
 		Username: fav.Username,
 		IdCar:    fav.IdCar,
 	}
 
-	err := u.repository.Favorite(favorite)
+	err := u.repository.AddAndRemoveFavorite(favorite)
 	return err
 }

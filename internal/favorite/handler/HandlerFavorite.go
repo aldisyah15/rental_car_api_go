@@ -40,7 +40,7 @@ func (h HandlerFavorite) Favorite(c *gin.Context) {
 		IdCar:    req.IdCar,
 	}
 
-	err = h.useCase.Favorite(favorite)
+	err = h.useCase.AddAndRemoveFavorite(favorite)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),

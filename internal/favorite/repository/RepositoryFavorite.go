@@ -15,7 +15,7 @@ func NewRepositoryFavorite(db *sql.DB) *FavoriteRepository {
 	}
 }
 
-func (r FavoriteRepository) Favorite(fav *model.RequestFavorite) error {
+func (r FavoriteRepository) AddAndRemoveFavorite(fav *model.RequestFavorite) error {
 	query := `SELECT EXISTS(
     SELECT 1 FROM user_favorite WHERE username = ? AND id_car = ?)`
 
