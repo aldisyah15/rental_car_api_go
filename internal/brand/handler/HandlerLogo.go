@@ -29,9 +29,9 @@ func (hc LogoHandler) UploadLogo(c *gin.Context) {
 	}
 	name := c.PostForm("name")
 	err := c.ShouldBindJSON(&name)
-	fileName, _ := c.FormFile("brand")
+	fileName, _ := c.FormFile("logo")
 
-	url, err := platform.UploadFileAndGet(c.Request.Context(), fileName, "rental-car-app", "brand")
+	url, err := platform.UploadFileAndGet(c.Request.Context(), fileName, "rental-car-app", "logo")
 	log.Printf("url : %v", url)
 
 	err = hc.useCase.UploadLogo(url, name)

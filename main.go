@@ -1,12 +1,16 @@
 package main
 
 import (
+	"net/http"
 	handler2 "rental_car/internal/auth/login/handler"
 	repository2 "rental_car/internal/auth/login/repository"
 	useCase2 "rental_car/internal/auth/login/useCase"
 	"rental_car/internal/auth/register/handler"
-	"rental_car/internal/auth/register/repository"
-	"rental_car/internal/auth/register/useCase"
+	repoRegister "rental_car/internal/auth/register/repository"
+	useCaseRegister "rental_car/internal/auth/register/useCase"
+	handler7 "rental_car/internal/booking/handler"
+	repository7 "rental_car/internal/booking/repository"
+	useCase7 "rental_car/internal/booking/useCase"
 	handler5 "rental_car/internal/brand/handler"
 	repository5 "rental_car/internal/brand/repository"
 	useCase5 "rental_car/internal/brand/useCase"
@@ -21,6 +25,7 @@ import (
 	useCase3 "rental_car/internal/user/useCase"
 	platform2 "rental_car/platform"
 	"rental_car/platform/middleware"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -32,8 +37,8 @@ func main() {
 	db := platform2.ConnectDB()
 	platform2.ConnectGoogleStorage()
 
-	repo := repository.NewAuthRepo(db)
-	UseCase := useCase.NewAuthCase(repo)
+	repo := repoRegister.NewAuthRepo(db)
+	UseCase := useCaseRegister.NewAuthCase(repo)
 	Handler := handler.NewRegisterHandler(UseCase)
 
 	repoLogin := repository2.NewLoginRepository(db)
@@ -56,6 +61,9 @@ func main() {
 	useCasefavorite := useCase6.NewUseCaseFavorite(repoFavorite)
 	handlerFavorite := handler6.NewHandlerFavorite(useCasefavorite)
 
+	repoBooking := repository7.NewRepositoryBooking(db, &http.Client{Timeout: 15 * time.Second})
+	useCaseBooking := useCase7.NewUseCaseBooking(repoBooking, repoCar)
+	handlerBooking := handler7.NewHandlerBooking(useCaseBooking)
 	r := gin.Default()
 
 	r.POST("/login", HandlerLogin.LoginUser)
@@ -76,6 +84,9 @@ func main() {
 	r.POST("/logo", handlerLogo.UploadLogo)
 	r.GET("/logo", handlerLogo.GetAllLogo)
 
+	r.POST("/proses-checkout", handlerBooking.ProsesToCheckout)
+	r.GET("/detail-checkout/:idOrder", handlerBooking.GetDetailCheckout)
+	r.POST("/booking/:idOrder", handlerBooking.BookingNow)
 	err := r.Run(":8080")
 	if err != nil {
 		return

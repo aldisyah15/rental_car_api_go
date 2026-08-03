@@ -27,6 +27,5 @@ func (u FavoriteUseCase) AddAndRemoveFavorite(fav *model.RequestFavorite) error 
 
 func (u FavoriteUseCase) GetFavorite(username string) (*[]model.ResponseFavorite, error) {
 	result, err := u.repository.GetFavorite(username)
-
 	return result, err
 }

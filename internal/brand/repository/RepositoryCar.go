@@ -16,8 +16,18 @@ func NewRepositoryLogo(db *sql.DB) *LogoRepository {
 }
 
 func (r LogoRepository) UploadLogo(urlLogo string, name string) error {
-	query := `INSERT INTO brand (brand, name) values (?,?)`
+	query := `INSERT INTO brand (logo, name) values (?,?)`
 	_, err := r.db.Exec(query, urlLogo, name)
+	if err != nil {
+		return err
+	}
+
+	queryDetailCar := `
+        UPDATE detail_car 
+        SET logo = ? 
+        WHERE brand = ?
+    `
+	_, err = r.db.Exec(queryDetailCar, urlLogo, name)
 	if err != nil {
 		return err
 	}
@@ -26,7 +36,7 @@ func (r LogoRepository) UploadLogo(urlLogo string, name string) error {
 }
 
 func (r LogoRepository) GetAllLogo() (*[]model.ResponseLogo, error) {
-	query := `SELECT id, name, brand from brand`
+	query := `SELECT id, name, logo from brand`
 	rows, err := r.db.Query(query)
 	if err != nil {
 		return nil, err

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"encoding/json"
 	"rental_car/internal/favorite/model"
 )
 
@@ -43,7 +44,24 @@ func (r FavoriteRepository) AddAndRemoveFavorite(fav *model.RequestFavorite) err
 }
 
 func (r FavoriteRepository) GetFavorite(username string) (*[]model.ResponseFavorite, error) {
-	query := `SELECT username, id_car, DATE_FORMAT(create_at, '%Y-%m-%d %H:%i:%s') FROM user_favorite where username = ?`
+	query := `SELECT
+    username, 
+    id_car,
+    name,
+    brand,
+    rental_price,
+    image,
+    horse_power,
+    gear,
+    description,
+    seat,
+   IFNULL(logo, ''),
+    stock,
+    DATE_FORMAT(create_at, '%Y-%m-%d %H:%i:%s')
+	FROM user_favorite
+	INNER JOIN detail_car ON id_car = id
+	where username = ?`
+
 	rows, err := r.db.Query(query, username)
 	if err != nil {
 		return nil, err
@@ -52,13 +70,19 @@ func (r FavoriteRepository) GetFavorite(username string) (*[]model.ResponseFavor
 
 	var AllFavorite []model.ResponseFavorite
 	for rows.Next() {
+		var images []byte
 		var fav model.ResponseFavorite
-		err := rows.Scan(&fav.Username, &fav.IdCar, &fav.CreateAt)
+		err := rows.Scan(&fav.Username, &fav.IdCar, &fav.Name, &fav.Brand, &fav.RentalPrice, &images, &fav.Horsepower, &fav.Gear, &fav.Description, &fav.Seat, &fav.Logo, &fav.Stock, &fav.CreateAt)
 		if err != nil {
 			return nil, err
 		}
 
+		if len(images) > 0 {
+			_ = json.Unmarshal(images, &fav.Images)
+		}
+
 		AllFavorite = append(AllFavorite, fav)
+
 	}
 
 	return &AllFavorite, nil

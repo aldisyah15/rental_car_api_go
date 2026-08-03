@@ -23,7 +23,7 @@ func (r CarRepository) UploadRentalCar(car *model.RequestCar, urlImages []string
 }
 
 func (r CarRepository) GetAllCars() (*[]model.ResponseCar, error) {
-	query := "SELECT id, name, brand, rental_price, image, horse_power, gear, description, stock, brand from detail_car"
+	query := "SELECT id, name, brand, rental_price, image, horse_power, gear, description, stock, seat, logo from detail_car"
 	rows, err := r.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -45,6 +45,7 @@ func (r CarRepository) GetAllCars() (*[]model.ResponseCar, error) {
 			&car.Gear,
 			&car.Description,
 			&car.Stock,
+			&car.Seat,
 			&car.Logo,
 		)
 		if len(rawJSON) > 0 {
