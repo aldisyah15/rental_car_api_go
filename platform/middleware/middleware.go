@@ -3,6 +3,7 @@ package middleware
 import (
 	"log"
 	"net/http"
+	"rental_car/config/env"
 	"strings"
 	"time"
 
@@ -10,7 +11,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var secretKey = []byte("your-secret-key")
+var secretKey = []byte(env.SecretJWT.GetValue())
 
 func GenerateString(userName string, rule string) (string, error) {
 	claim := jwt.MapClaims{

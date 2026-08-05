@@ -15,8 +15,8 @@ func ConnectGoogleStorage() {
 	}
 
 	defer client.Close()
-	backetName := "rental-car-app"
-	bucket := client.Bucket(backetName)
+	BacketName := "rental-car-app"
+	bucket := client.Bucket(BacketName)
 
 	log.Printf("Bucket: %v", bucket.BucketName())
 }

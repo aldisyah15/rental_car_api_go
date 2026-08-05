@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	handler2 "rental_car/internal/auth/login/handler"
 	repository2 "rental_car/internal/auth/login/repository"
@@ -27,15 +28,26 @@ import (
 	"rental_car/platform/middleware"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 // TIP <p>To run your code, right-click the code and select <b>Run</b>.</p> <p>Alternatively, click
 // the <icon src="AllIcons.Actions.Execute"/> icon in the gutter and select the <b>Run</b> menu item from here.</p>
 
 func main() {
+	err := godotenv.Load("config/env/.env")
+	if err != nil {
+		log.Fatalf("Failed get env : %v", err)
+	}
+
 	db := platform2.ConnectDB()
 	platform2.ConnectGoogleStorage()
+	r := gin.Default()
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:3000"}
+	r.Use(cors.New(config))
 
 	repo := repoRegister.NewAuthRepo(db)
 	UseCase := useCaseRegister.NewAuthCase(repo)
@@ -64,7 +76,6 @@ func main() {
 	repoBooking := repository7.NewRepositoryBooking(db, &http.Client{Timeout: 15 * time.Second})
 	useCaseBooking := useCase7.NewUseCaseBooking(repoBooking, repoCar)
 	handlerBooking := handler7.NewHandlerBooking(useCaseBooking)
-	r := gin.Default()
 
 	r.POST("/login", HandlerLogin.LoginUser)
 	r.POST("/register", Handler.CreateUser)
@@ -87,7 +98,7 @@ func main() {
 	r.POST("/proses-checkout", handlerBooking.ProsesToCheckout)
 	r.GET("/detail-checkout/:idOrder", handlerBooking.GetDetailCheckout)
 	r.POST("/booking/:idOrder", handlerBooking.BookingNow)
-	err := r.Run(":8080")
+	err = r.Run(":8080")
 	if err != nil {
 		return
 	}
